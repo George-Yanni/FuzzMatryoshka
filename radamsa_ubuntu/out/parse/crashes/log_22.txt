@@ -1,0 +1,58 @@
+=================================================================
+==18319==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x50e0000000d5 at pc 0x7211f0cfb42e bp 0x7ffc17811700 sp 0x7ffc17810ea8
+READ of size 12 at 0x50e0000000d5 thread T0
+    #0 0x7211f0cfb42d in memcpy ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:115
+    #1 0x5b4b33a16e20 in memcpy /usr/include/x86_64-linux-gnu/bits/string_fortified.h:29
+    #2 0x5b4b33a16e20 in matryoshka::parse_firmware_image(unsigned char const*, unsigned long, matryoshka::FwImage&) src/fw_parser.cpp:43
+    #3 0x5b4b33a121b7 in main src/main.cpp:95
+    #4 0x7211efc2a1c9 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #5 0x7211efc2a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #6 0x5b4b33a0e824 in _start (/home/yanni/Desktop/FuzzMatryoshka/matryoshka+0x21824) (BuildId: d235ccf5e4e002c0a00b776eb12f1f77e50cfc3b)
+
+0x50e0000000d5 is located 0 bytes after 149-byte region [0x50e000000040,0x50e0000000d5)
+allocated by thread T0 here:
+    #0 0x7211f0cfe548 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:95
+    #1 0x5b4b33a157a6 in std::__new_allocator<unsigned char>::allocate(unsigned long, void const*) /usr/include/c++/13/bits/new_allocator.h:151
+    #2 0x5b4b33a157a6 in std::allocator_traits<std::allocator<unsigned char> >::allocate(std::allocator<unsigned char>&, unsigned long) /usr/include/c++/13/bits/alloc_traits.h:482
+    #3 0x5b4b33a157a6 in std::_Vector_base<unsigned char, std::allocator<unsigned char> >::_M_allocate(unsigned long) /usr/include/c++/13/bits/stl_vector.h:381
+    #4 0x5b4b33a157a6 in void std::vector<unsigned char, std::allocator<unsigned char> >::_M_range_insert<char*>(__gnu_cxx::__normal_iterator<unsigned char*, std::vector<unsigned char, std::allocator<unsigned char> > >, char*, char*, std::forward_iterator_tag) /usr/include/c++/13/bits/vector.tcc:805
+    #5 0x5b4b33a0faa8 in __gnu_cxx::__normal_iterator<unsigned char*, std::vector<unsigned char, std::allocator<unsigned char> > > std::vector<unsigned char, std::allocator<unsigned char> >::insert<char*, void>(__gnu_cxx::__normal_iterator<unsigned char const*, std::vector<unsigned char, std::allocator<unsigned char> > >, char*, char*) /usr/include/c++/13/bits/stl_vector.h:1486
+    #6 0x5b4b33a0faa8 in read_stdin src/main.cpp:26
+    #7 0x5b4b33a12132 in main src/main.cpp:88
+    #8 0x7211efc2a1c9 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #9 0x7211efc2a28a in __libc_start_main_impl ../csu/libc-start.c:360
+    #10 0x5b4b33a0e824 in _start (/home/yanni/Desktop/FuzzMatryoshka/matryoshka+0x21824) (BuildId: d235ccf5e4e002c0a00b776eb12f1f77e50cfc3b)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:115 in memcpy
+Shadow bytes around the buggy address:
+  0x50dffffffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x50dffffffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x50dfffffff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x50dfffffff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x50e000000000: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+=>0x50e000000080: 00 00 00 00 00 00 00 00 00 00[05]fa fa fa fa fa
+  0x50e000000100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x50e000000180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x50e000000200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x50e000000280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x50e000000300: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==18319==ABORTING
