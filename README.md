@@ -39,6 +39,8 @@ Generate a known-valid seed image:
 make seed
 ```
 
+> **Important:** For builds with sanitizers enabled, use the **sanitisers** branch.
+
 Expected artifacts:
 
 - matryoshka
