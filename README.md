@@ -119,26 +119,7 @@ When you observe a crash or hang:
 ./updater corpus/valid_fw.bin | ./matryoshka protocol
 ```
 
-## Repository Layout
 
-```
-FuzzMatryoshka/
-├── README.md
-├── DESIGN.md
-├── Makefile
-├── src/
-│   ├── fw_format.hpp
-│   ├── fw_parser.hpp
-│   ├── fw_parser.cpp
-│   ├── protocol.hpp
-│   ├── protocol.cpp
-│   ├── main.cpp
-│   └── updater.cpp
-├── tools/
-│   └── mkseed_fw.cpp
-└── corpus/
-    └── valid_fw.bin
-```
 
 ## Disclaimer
 
