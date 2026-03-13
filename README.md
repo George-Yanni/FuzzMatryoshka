@@ -62,10 +62,11 @@ radamsa corpus/valid_fw.bin | ./matryoshka parse
 ```bash
 mkdir -p crashes
 for i in $(seq 1 100000); do
-  radamsa corpus/valid_fw.bin | ./matryoshka parse >/dev/null 2>&1 || {
+  radamsa corpus/valid_fw.bin > /tmp/mut_fw.bin
+  ./matryoshka parse < /tmp/mut_fw.bin >/dev/null 2>&1 || {
     echo "crash at iteration $i"
-    radamsa corpus/valid_fw.bin > "crashes/parse_$i.bin"
-    break
+    cp /tmp/mut_fw.bin "crashes/parse_$i.bin"
+    continue
   }
 done
 ```
@@ -73,10 +74,13 @@ done
 ### 3) Header-only fuzz loop
 
 ```bash
+mkdir -p crashes
 for i in $(seq 1 100000); do
-  radamsa corpus/valid_fw.bin | ./matryoshka header >/dev/null 2>&1 || {
+  radamsa corpus/valid_fw.bin > /tmp/mut_fw.bin
+  ./matryoshka header < /tmp/mut_fw.bin >/dev/null 2>&1 || {
     echo "header crash at iteration $i"
-    break
+    cp /tmp/mut_fw.bin "crashes/header_$i.bin"
+    continue
   }
 done
 ```
@@ -84,29 +88,15 @@ done
 ### 4) Protocol path fuzzing via updater pipeline
 
 ```bash
+mkdir -p crashes
 for i in $(seq 1 100000); do
   radamsa corpus/valid_fw.bin > /tmp/mut_fw.bin
   ./updater /tmp/mut_fw.bin | ./matryoshka protocol >/dev/null 2>&1 || {
     echo "protocol crash at iteration $i"
     cp /tmp/mut_fw.bin "crashes/protocol_$i.bin"
-    break
+    continue
   }
 done
-```
-
-### 5) Quick Windows PowerShell example
-
-```powershell
-New-Item -ItemType Directory -Force crashes | Out-Null
-for ($i = 1; $i -le 10000; $i++) {
-  radamsa corpus/valid_fw.bin > mut_fw.bin
-  Get-Content mut_fw.bin -Encoding Byte | .\matryoshka parse *> $null
-  if ($LASTEXITCODE -ne 0) {
-    Write-Host "crash at iteration $i"
-    Copy-Item mut_fw.bin "crashes\parse_$i.bin"
-    break
-  }
-}
 ```
 
 ## Triage Guidance
